@@ -16,7 +16,7 @@ Sygnały oznaczone w opisie zadania symbolami S1  S4 należy wybrać samodzie
 Parametr 	K1 	K2 
 Mechanizm 	pamięć współdzielona 	kolejka komunikatów 
 
-2.	Opis rozwiązania, komentarze, wnioski 
+2.	Opis rozwiązania
 
 Proces start.c jest procesem macierzystym, powołuje on procesy potomne (na ekran zostają wypisane ich PID), które z użyciem funkcji execl, która uruchamia programy p1, p2, p3. Proces macierzysty znajduje się w stanie wstrzymania – jego jedynym działaniem jest odbieranie sygnałów od procesów potomnych i wysyłanie odpowiednich sygnałów do każdego z procesów. Sygnały, których obsługe wykonuje proces macierzysty to kolejno: 
 SIGHUP – po otrzymaniu tego sygnału proces macierzysty wysyła do P2 sygnał SIGUSR2 – P2 przestaje kodować otrzymywane ścieżki
