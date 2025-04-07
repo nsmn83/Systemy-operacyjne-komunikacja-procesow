@@ -1,22 +1,6 @@
 # Systemy-operacyjne-komunikacja-procesow
 
-W poniższym pliku znajduje się treść polecenia z przedmiotu Systemy Operacyjne wraz z opisem zaimplementowanego rozwiązania.   
-
-1. Zadanie projektowe:
-Opracować zestaw programów typu producent - konsument realizujących następujący schemat synchronicznej komunikacji międzyprocesowej: 
-•	Proces 1: po uruchomieniu wczytuje od użytkownika ścieżkę do dowolnego katalogu, a następnie przekazuje do procesu 2, poprzez mechanizm komunikacyjny K1, pełną ścieżkę dla każdego znalezionego wewnątrz zasobu (skrótu, pliku, katalogu). 
-•	Proces 2: pobiera dane przesłane przez proces 1. Koduje otrzymane od procesu 1 dane do postaci heksadecymalnej, wypisuje postać źródłową i zakodowaną na ekranie w formacie: ścieżka_oryginalna -:- ścieżka_zakodowana, a następnie dane w postaci zakodowanej przekazuje do procesu 3 poprzez mechanizm komunikacyjny K2. 
-•	Proces 3: pobiera dane wyprodukowane przez proces 2 i wypisuje je na ekranie. 
-
-Ponadto należy zaimplementować oddzielną aplikację, która umożliwi odwrotną konwersję pozwalając tym samym na weryfikację poprawności przesyłania danych przez przygotowane aplikacje. W przypadku stwierdzenia błędów w komunikacji międzyprocesowej (np. przesłane dane zostaną uszkodzone lub są niekompletne), dalsza część projektu nie będzie sprawdzana). 
-Wszystkie trzy procesy powinny być powoływane automatycznie z jednego procesu inicjującego (jeśli wykorzystane mechanizmy komunikacji to umożliwiają). Po powołaniu procesów potomnych proces inicjujący wstrzymuje swoją pracę. Proces inicjujący wznawia pracę w momencie kończenia pracy programu (o czym niżej) - jego zadaniem jest „posprzątać” po programie przed zakończeniem działania. 
-Ponadto należy zaimplementować mechanizm asynchronicznego przekazywania informacji pomiędzy operatorem a procesami oraz pomiędzy procesami. Wykorzystać do tego dostępny mechanizm sygnałów. Operator może wysłać do dowolnego procesu sygnał zakończenia działania (S1), sygnał wstrzymania działania (S2), sygnał wznowienia działania (S3) i sygnał włączenia/wyłączenia funkcji kodującej (S4). Sygnał S2 powoduje wstrzymanie synchronicznej wymiany danych pomiędzy procesami. Sygnał S3 powoduje wznowienie tej wymiany. Sygnał S4 włącza/wyłącza kodowanie danych do postaci heksadecymalnej, w związku z czym między procesem 2 i 3 dane mogą być przesyłane w sposób niezmieniony. Sygnał S1 powoduje zakończenie działania aplikacji oraz zwolnienie wszelkich wykorzystywanych przez procesy zasobów (zasoby zwalnia proces macierzysty). Każdy z sygnałów może być przekazywany przez operatora do dowolnego procesu 1, 2 lub 3. O tym, do którego procesu wysłać sygnał, decyduje operator, a nie programista. Każdy z sygnałów operator może wysłać do innego procesu. Mimo, że operator kieruje sygnał do jednego procesu, to pożądane przez operatora działanie musi zostać zrealizowane przez wszystkie trzy procesy. W związku z tym, proces odbierający sygnał od operatora musi powiadomić o przyjętym żądaniu pozostałe dwa procesy. Powinien wobec tego przekazać do nich odpowiedni sygnał informując o tym jakiego działania wymaga operator. Procesy odbierające sygnał, powinny zachować się adekwatnie do otrzymanego sygnału. Wszystkie trzy procesy powinny zareagować zgodnie z żądaniem operatora.
-
-Sygnały oznaczone w opisie zadania symbolami S1  S4 należy wybrać samodzielnie spośród sygnałów dostępnych w systemie.  
-Parametr 	K1 	K2 
-Mechanizm 	pamięć współdzielona 	kolejka komunikatów 
-
-2.	Opis rozwiązania
+Opis rozwiązania
 
 Proces start.c jest procesem macierzystym, powołuje on procesy potomne (na ekran zostają wypisane ich PID), które z użyciem funkcji execl, która uruchamia programy p1, p2, p3. Proces macierzysty znajduje się w stanie wstrzymania – jego jedynym działaniem jest odbieranie sygnałów od procesów potomnych i wysyłanie odpowiednich sygnałów do każdego z procesów. Sygnały, których obsługe wykonuje proces macierzysty to kolejno: 
 SIGHUP – po otrzymaniu tego sygnału proces macierzysty wysyła do P2 sygnał SIGUSR2 – P2 przestaje kodować otrzymywane ścieżki
